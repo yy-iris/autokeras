@@ -137,19 +137,19 @@ class Choice(HyperParameter):
                 'values: ' + str(values) + ' with types ' + str(types))
 
         # Standardize on str, int, float, bool.
-        if isinstance(values[0], six.string_types):
-            values = [str(v) for v in values]
-            if default is not None:
-                default = str(default)
-        elif isinstance(values[0], six.integer_types):
-            values = [int(v) for v in values]
-            if default is not None:
-                default = int(default)
-        elif not isinstance(values[0], (bool, float)):
-            raise TypeError(
-                'A `Choice` can contain only `int`, `float`, `str`, or '
-                '`bool`, found values: ' + str(values) + 'with '
-                'types: ' + str(type(values[0])))
+        # if isinstance(values[0], six.string_types):
+        #     values = [str(v) for v in values]
+        #     if default is not None:
+        #         default = str(default)
+        # elif isinstance(values[0], six.integer_types):
+        #     values = [int(v) for v in values]
+        #     if default is not None:
+        #         default = int(default)
+        # elif not isinstance(values[0], (bool, float)):
+        #     raise TypeError(
+        #         'A `Choice` can contain only `int`, `float`, `str`, or '
+        #         '`bool`, found values: ' + str(values) + 'with '
+        #         'types: ' + str(type(values[0])))
         self.values = values
 
         if default is not None and default not in values:
@@ -1004,6 +1004,7 @@ def deserialize(config):
 
 def serialize(obj):
     return {'class_name': obj.__class__.__name__,
+
             'config': obj.get_config()}
 
 

@@ -280,7 +280,8 @@ class ConvBlock(block_module.Block):
         super().__init__(**kwargs)
         self.kernel_size = utils.get_hyperparameter(
             kernel_size,
-            hyperparameters.Choice("kernel_size", [3, 5, 7], default=3),
+            hyperparameters.Choice("kernel_size", [(1,2), (1,3), (1,4), (2,2), (2,3)], default=(1,3)),
+            #hyperparameters.Choice("kernel_size", [3, 5, 7], default=3),
             int,
         )
         self.num_blocks = utils.get_hyperparameter(
@@ -365,9 +366,18 @@ class ConvBlock(block_module.Block):
                     activation="relu",
                 )(output_node)
             if max_pooling:
+                ## mycode
+                pool_size = []
+                for i in kernel_size:
+                    temp = i - 1
+                    if temp < 1:
+                        temp = 1
+                    pool_size.append(temp)
+                pool_size = tuple(pool_size)
+
                 output_node = pool(
-                    kernel_size - 1,
-                    padding=self._get_padding(kernel_size - 1, output_node),
+                    pool_size,
+                    padding=self._get_padding(pool_size, output_node),
                 )(output_node)
             if dropout > 0:
                 output_node = layers.Dropout(dropout)(output_node)
@@ -375,8 +385,8 @@ class ConvBlock(block_module.Block):
 
     @staticmethod
     def _get_padding(kernel_size, output_node):
-        if all(kernel_size * 2 <= length for length in output_node.shape[1:-1]):
-            return "valid"
+        # if all(min(kernel_size) * 2 <= length for length in output_node.shape[1:-1]):
+        #     return "valid"
         return "same"
 
 
